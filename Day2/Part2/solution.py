@@ -5,13 +5,9 @@ def main():
     with open("input.txt", "r") as file:
         lines = file.readlines()
 
-    game_numbers = []
     array_of_games = []
 
     for line in lines:
-        game_number = (line.split(":"))[0].split("Game ")[1]
-        game_numbers.append(int(game_number))
-
         game = ((line.rstrip()).split(": "))[1]
         pairs = re.split(', |; ', game)
         array_of_hands = []
@@ -22,19 +18,14 @@ def main():
         
         array_of_games.append(array_of_hands)
 
-    game_dict = {}
-
-    for index, number in enumerate(game_numbers):
-        game_dict[number] = array_of_games[index]
-
     powers = []
 
-    for key, value in game_dict.items():
+    for game in array_of_games:
         min_red = 0
         min_green = 0
         min_blue = 0
 
-        for pair in value:
+        for pair in game:
             if "red" in str(pair) and pair[0] > min_red:
                 min_red = pair[0]
             if "green" in str(pair) and pair[0] > min_green:
