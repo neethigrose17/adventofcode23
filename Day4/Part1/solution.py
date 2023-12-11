@@ -1,3 +1,5 @@
+import re
+
 def main():
 
     with open("input.txt", "r") as file:
@@ -6,8 +8,8 @@ def main():
     card_values = []
 
     for line in lines:
-        winning_numbers = set((line.rstrip()).split(': ')[1].split(" | ")[0].split(" "))
-        numbers_you_have = set((line.rstrip()).split(': ')[1].split(" | ")[1].split(" "))
+        winning_numbers = set((line.rstrip()).split(': ')[1].split(" | ")[0].split())
+        numbers_you_have = set((line.rstrip()).split(': ')[1].split(" | ")[1].split())
 
         common_numbers = winning_numbers.intersection(numbers_you_have)
         how_many = len(common_numbers)
