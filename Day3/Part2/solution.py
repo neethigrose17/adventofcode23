@@ -1,3 +1,5 @@
+import math
+
 def main():
 
     with open("input.txt", "r") as file:
@@ -21,8 +23,7 @@ def main():
 
     value_dict = dict(zip(zip(x_value, y_value), char_value))
 
-    numbers = []
-    skip = False
+    gears = {}
 
     line_length = len(lines[0]) - 2 # because of newline
     number_of_lines = len(lines) - 1
@@ -76,22 +77,21 @@ def main():
                         lower_right = (coord[0] + 1, coord[1] + 1)
                         adjacent_coords.append(lower_right)
 
-            adjacent_chars = []
+
             for coord in adjacent_coords:
-                adjacent_chars.append(value_dict[coord])
+                if value_dict[coord] == "*":
+                    if coord not in gears.keys():
+                        gears[coord] = [int(number)]
+                    if coord in gears.keys() and int(number) not in gears[coord]:
+                        gears[coord].append(int(number))
 
-            is_part_num = False
+    gear_ratios = []
+    for key, value in gears.items():
+        if len(value) == 2:
+            gear_ratios.append(math.prod(value))
+    
+    print(sum(gear_ratios))
 
-            for char in adjacent_chars:
-                if not char.isdigit() and char != ".":
-                    is_part_num = True
-                    break
-            
-            if is_part_num == True:
-                numbers.append(int(number))
-
-    print(sum(numbers))
-            
 
 if __name__ == '__main__':
     main()
