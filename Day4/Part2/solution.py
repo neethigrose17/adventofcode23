@@ -5,7 +5,12 @@ def main():
     with open("input.txt", "r") as file:
         lines = file.readlines()
 
-    indexes = {}
+    number_of_lines = len(lines)
+
+    copies = {}
+
+    for x in range(1, number_of_lines + 1):
+        copies[x] = 1
 
     for line in lines:
         index = int((line.rstrip()).split(':')[0].split()[1])
@@ -17,16 +22,11 @@ def main():
         how_many = len(common_numbers)
 
         if how_many > 0:
-            current_index = index
-            for x in range(how_many):
-                if current_index + 1 <= 207:
-                    if current_index + 1 not in indexes.keys():
-                        indexes[current_index + 1] = 1
-                    else:
-                        indexes[current_index + 1] += 1
-                    current_index += 1
+            for x in range(1, how_many + 1):
+                if index + x <= number_of_lines:
+                    copies[index + x] += copies[index]
 
-    total_cards = len(lines) + sum(indexes.values())
+    total_cards = sum(copies.values())
 
     print(total_cards)
     
