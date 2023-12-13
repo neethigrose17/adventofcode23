@@ -1,5 +1,5 @@
 def read_file():
-    with open("test.txt", "r") as file:
+    with open("input.txt", "r") as file:
         lines = file.readlines()
 
     seeds = []
@@ -51,25 +51,40 @@ def read_file():
             if current_category == "humidity-to-location":
                 humidity_to_location[(int(line.split()[0]), int(line.split()[1]))] = int(line.split()[2])
 
-    return seeds, seed_to_soil, soil_to_fertilizer, fertilizer_to_water, water_to_light, light_to_temperature, temperature_to_humidity, humidity_to_location
+
+    dict_of_transitions = {"seed_to_soil": seed_to_soil, "soil_to_fertilizer": soil_to_fertilizer, "fertilizer_to_water": fertilizer_to_water, "water_to_light": water_to_light, "light_to_temperature": light_to_temperature, "temperature_to_humidity": temperature_to_humidity, "humidity_to_location": humidity_to_location}
+    return seeds, dict_of_transitions
+
+def make_transition(source_array, transition_type, dict_of_transitions):
+    destination_array = []
+    transition_dict = dict_of_transitions[transition_type]
+
+    for item in source_array:
+        destination = ""
+        for key in transition_dict.keys():
+            if item in range(key[1], key[1] + transition_dict[key]):
+                destination = key[0] + (item - key[1])
+                destination_array.append(destination)
+        if destination == "":
+            destination = item
+            destination_array.append(destination)
+    return destination_array
+
 
 def main():
 
-    seeds, seed_to_soil, soil_to_fertilizer, fertilizer_to_water, water_to_light, light_to_temperature, temperature_to_humidity, humidity_to_location = read_file()
+    seeds, dict_of_transitions = read_file()
 
-    print(seeds)
-    print(seed_to_soil)
-    print(soil_to_fertilizer)
-    print(fertilizer_to_water)
-    print(water_to_light)
-    print(light_to_temperature)
-    print(temperature_to_humidity)
-    print(humidity_to_location)
+    soils = make_transition(seeds, "seed_to_soil", dict_of_transitions)
+    fertilizers = make_transition(soils, "soil_to_fertilizer", dict_of_transitions)
+    waters = make_transition(fertilizers, "fertilizer_to_water", dict_of_transitions)
+    lights = make_transition(waters, "water_to_light", dict_of_transitions)
+    temperatures = make_transition(lights, "light_to_temperature", dict_of_transitions)
+    humidities = make_transition(temperatures, "temperature_to_humidity", dict_of_transitions)
+    locations = make_transition(humidities, "humidity_to_location", dict_of_transitions)
 
-    
-
-
-
+    solution = min(locations)
+    print(solution)
     
 
 if __name__ == '__main__':
