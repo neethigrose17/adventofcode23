@@ -53,7 +53,10 @@ def read_file():
 
 
     dict_of_transitions = {"seed_to_soil": seed_to_soil, "soil_to_fertilizer": soil_to_fertilizer, "fertilizer_to_water": fertilizer_to_water, "water_to_light": water_to_light, "light_to_temperature": light_to_temperature, "temperature_to_humidity": temperature_to_humidity, "humidity_to_location": humidity_to_location}
-    return seed_ranges, dict_of_transitions
+
+    reverse_dict = {"temperature_to_humidity": temperature_to_humidity, "light_to_temperature": light_to_temperature, "water_to_light": water_to_light, "fertilizer_to_water": fertilizer_to_water, "soil_to_fertilizer": soil_to_fertilizer, "seed_to_soil": seed_to_soil}
+
+    return seed_ranges, dict_of_transitions, reverse_dict
 
 
 def find_intersection(range_one, range_two):
@@ -87,7 +90,7 @@ def get_next_range(old_range, dictionary):
 
 def main():
     # get seed ranges and dictionaries
-    seed_ranges, dict_of_transitions = read_file()
+    seed_ranges, dict_of_transitions, reverse_dict = read_file()
 
     # destination, source, range-length
     
@@ -105,57 +108,23 @@ def main():
 
     print(f"humidity range {humidity_ranges[0]}")
 
-    temperature_range = get_next_range(humidity_ranges[0], dict_of_transitions["temperature_to_humidity"])
-    light_range = get_next_range(temperature_range, dict_of_transitions["light_to_temperature"])
-    water_range = get_next_range(light_range, dict_of_transitions["water_to_light"])
-    fertilizer_range = get_next_range(water_range, dict_of_transitions["fertilizer_to_water"])
-    soil_range = get_next_range(fertilizer_range, dict_of_transitions["soil_to_fertilizer"])
-    seed_range = get_next_range(soil_range, dict_of_transitions["seed_to_soil"])
+    next_range = humidity_ranges[0]
 
-    print(f"seed range {seed_range}")
+    for dictionary in reverse_dict.values():
+        new_range = get_next_range(next_range, dictionary)
+        next_range = new_range
 
-    # seeds_found = False
+    print(f"final result {next_range}")
 
-    # while seeds_found == False:
-    #     for next_range in humidity_ranges:
-    #         for dictionary in dict_of_transitions.values():
-    #             next_range = get_next_range(next_range, dictionary)
-    #         if next_range != None:
-    #             print("found a seed range")
-    #             seeds_found = True
+    # temperature_range = get_next_range(humidity_ranges[0], dict_of_transitions["temperature_to_humidity"])
+    # light_range = get_next_range(temperature_range, dict_of_transitions["light_to_temperature"])
+    # water_range = get_next_range(light_range, dict_of_transitions["water_to_light"])
+    # fertilizer_range = get_next_range(water_range, dict_of_transitions["fertilizer_to_water"])
+    # soil_range = get_next_range(fertilizer_range, dict_of_transitions["soil_to_fertilizer"])
+    # seed_range = get_next_range(soil_range, dict_of_transitions["seed_to_soil"])
 
-    # find corresponding humidity ranges, in order - DONE
-    # find corresponding temperature range
-    # find corresponding light range
-    # find corresponding water range
-    # find fertilizer range
-    # find soil range
-    # find target seed range
-    
-    # sort seed ranges small to large
-    # find if target seed range overlaps with any existing seed ranges
-    # find lowest seed number in overlap???
+    # print(f"seed range {seed_range}")
 
-    # temperature_to_humidity_sorted = sort_dict(dict_of_transitions["temperature_to_humidity"])
-    # print(f"temperature to humidity {temperature_to_humidity_sorted}")
-
-    # overlap = None
-
-    # for key, value in temperature_to_humidity_sorted.items():
-    #     humidity_range = range(key[0], key[0] + value)
-    #     print(f"new humidity range {humidity_range}")
-    #     overlap = find_intersection(humidity_ranges[0], humidity_range)
-    #     if overlap != None:
-    #         next_range = range(key[1], key[1] + len(overlap))
-    #         print(f"next range {next_range}")
-    #         break
-        
-    # print(f"overlap {overlap}")
-    # print(len(overlap))
-
-    # get next range
-    
-    # next_range = 
 
 
 
