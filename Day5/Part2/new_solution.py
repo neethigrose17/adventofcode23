@@ -69,24 +69,33 @@ def find_intersection(range_one, range_two):
 def sort_dict(dictionary):
     return dict(sorted(dictionary.items()))
 
-def get_corresponding_range(old_range, dictionary):
+def get_next_range(old_range, dictionary):
     dictionary = sort_dict(dictionary)
 
+    next_range = None
+
     for key, value in dictionary.items():
-        new_range = range(key[0], key[0] + value)
-        print(f"new humidity range {new_range}")
-        overlap = find_intersection(old_range, new_range)
+        corresponding_range = range(key[0], key[0] + value)
+        overlap = find_intersection(old_range, corresponding_range)
         if overlap != None:
+            next_range = range(key[1], key[1] + len(overlap))
+            print(f"next range {next_range}")
             break
+        
+    return next_range
 
 
 def main():
+    # get seed ranges and dictionaries
     seed_ranges, dict_of_transitions = read_file()
 
     # destination, source, range-length
     
+    # sort last dictionary small to large
+    # get smallest location range
+    
     humidity_to_location_sorted = sort_dict(dict_of_transitions["humidity_to_location"])
-    print(f"humidity to location {humidity_to_location_sorted}")
+    # print(f"humidity to location {humidity_to_location_sorted}")
 
     humidity_ranges = []
 
@@ -94,22 +103,55 @@ def main():
         humidity_range = range(key[1], key[1] + value)
         humidity_ranges.append(humidity_range)
 
-    temperature_to_humidity_sorted = sort_dict(dict_of_transitions["temperature_to_humidity"])
-    print(f"temperature to humidity {temperature_to_humidity_sorted}")
+    print(f"humidity range {humidity_ranges[0]}")
 
-    overlap = None
+    temperature_range = get_next_range(humidity_ranges[0], dict_of_transitions["temperature_to_humidity"])
+    light_range = get_next_range(temperature_range, dict_of_transitions["light_to_temperature"])
+    water_range = get_next_range(light_range, dict_of_transitions["water_to_light"])
+    fertilizer_range = get_next_range(water_range, dict_of_transitions["fertilizer_to_water"])
+    soil_range = get_next_range(fertilizer_range, dict_of_transitions["soil_to_fertilizer"])
+    seed_range = get_next_range(soil_range, dict_of_transitions["seed_to_soil"])
 
-    for key, value in temperature_to_humidity_sorted.items():
-        humidity_range = range(key[0], key[0] + value)
-        print(f"new humidity range {humidity_range}")
-        overlap = find_intersection(humidity_ranges[0], humidity_range)
-        if overlap != None:
-            next_range = range(key[1], key[1] + len(overlap))
-            print(f"next range {next_range}")
-            break
+    print(f"seed range {seed_range}")
+
+    # seeds_found = False
+
+    # while seeds_found == False:
+    #     for next_range in humidity_ranges:
+    #         for dictionary in dict_of_transitions.values():
+    #             next_range = get_next_range(next_range, dictionary)
+    #         if next_range != None:
+    #             print("found a seed range")
+    #             seeds_found = True
+
+    # find corresponding humidity ranges, in order - DONE
+    # find corresponding temperature range
+    # find corresponding light range
+    # find corresponding water range
+    # find fertilizer range
+    # find soil range
+    # find target seed range
+    
+    # sort seed ranges small to large
+    # find if target seed range overlaps with any existing seed ranges
+    # find lowest seed number in overlap???
+
+    # temperature_to_humidity_sorted = sort_dict(dict_of_transitions["temperature_to_humidity"])
+    # print(f"temperature to humidity {temperature_to_humidity_sorted}")
+
+    # overlap = None
+
+    # for key, value in temperature_to_humidity_sorted.items():
+    #     humidity_range = range(key[0], key[0] + value)
+    #     print(f"new humidity range {humidity_range}")
+    #     overlap = find_intersection(humidity_ranges[0], humidity_range)
+    #     if overlap != None:
+    #         next_range = range(key[1], key[1] + len(overlap))
+    #         print(f"next range {next_range}")
+    #         break
         
-    print(f"overlap {overlap}")
-    print(len(overlap))
+    # print(f"overlap {overlap}")
+    # print(len(overlap))
 
     # get next range
     
