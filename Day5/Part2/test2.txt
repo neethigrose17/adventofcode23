@@ -18,13 +18,19 @@ water-to-light map:
 112 20 15
 
 light-to-temperature map:
-1000 100 50
 2000 112 50
+1000 100 50
 
 temperature-to-humidity map:
-35 1000 12
 55 2000 12
+35 1000 9
 
 humidity-to-location map:
-70 35 10
 90 55 10
+70 35 10
+
+
+
+
+
+
