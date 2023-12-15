@@ -112,27 +112,20 @@ def get_destination_value(source_value, dictionary):
 
 
 def main():
-    # get seed ranges and dictionaries
     seed_ranges, dict_of_transitions, reverse_dict = read_file()
-
-    # destination, source, range-length
-    
-    # sort last dictionary small to large
-    # get smallest location range
     
     humidity_to_location_sorted = sort_dict(dict_of_transitions["humidity_to_location"])
-    # print(f"humidity to location {humidity_to_location_sorted}")
 
     humidity_ranges = []
+    location_ranges = []
 
     for key, value in humidity_to_location_sorted.items():
         humidity_range = range(key[1], key[1] + value)
         humidity_ranges.append(humidity_range)
-
-    print(f"humidity range {humidity_ranges[0]}")
+        location_range = range(key[0], key[0] + value)
+        location_ranges.append(location_range)
 
     seeds_found = False
-
     final_seeds = None
 
     while seeds_found == False:
@@ -143,15 +136,11 @@ def main():
                     new_range = get_next_range(next_range, dictionary)
                     next_range = new_range
             if next_range != None:
-                print(f"last range {next_range}")
                 final_seeds = find_seeds(seed_ranges, next_range)
             if final_seeds != None:
                 seeds_found = True
 
-    print(final_seeds)
-
     start_value = final_seeds.start
-    print(f"start value {start_value}")
     next_value = ""
 
     for dictionary in dict_of_transitions.values():
@@ -162,28 +151,58 @@ def main():
 
     print(location)
 
-    seed_ranges.sort()
-    full_seed_ranges = []
-    for item in seed_ranges:
-        full_seed_ranges.append(range(item[0], item[0] + item[1]))
+    # what if it's not in the map?
 
-    total_array_of_source_ranges = {}
-    for key, value in dict_of_transitions.items():
-        array_of_source_ranges = []
-        for key, value in dictionary.keys():
-            array_of_source_ranges.append((key[1], key[1] + value))
-        total_array_of_source_ranges[key] = array_of_source_ranges
+    smaller_locations = range(0, location)
 
-    not_in_any = False
+    locations_without_corresponding_humidity = []
 
-    for item in full_seed_ranges:
-        if item.start < location:
-            for key, value in total_array_of_source_ranges.keys():
-                if item.start not in all(value):
-                    not_in_any = True
-            if not_in_any == True:
-                location = item.start
-                print(location)
+    done = False
+    while done == False:
+        starting_set = set(smaller_locations)
+        for item in humidity_ranges:
+            leftover = starting_set - set(item)
+            if len(leftover) > 0:
+                starting_set = leftover
+            else:
+                break
+        if len(starting_set) > 0:
+            done = True
+            print(f"excluded possible location numbers {starting_set}")
+        else:
+            print("no exclusions found")
+            done = True
+            break
+
+
+    
+
+
+
+
+
+    # seed_ranges.sort()
+    # full_seed_ranges = []
+    # for item in seed_ranges:
+    #     full_seed_ranges.append(range(item[0], item[0] + item[1]))
+
+    # total_array_of_source_ranges = {}
+    # for key, value in dict_of_transitions.items():
+    #     array_of_source_ranges = []
+    #     for key, value in dictionary.keys():
+    #         array_of_source_ranges.append((key[1], key[1] + value))
+    #     total_array_of_source_ranges[key] = array_of_source_ranges
+
+    # not_in_any = False
+
+    # for item in full_seed_ranges:
+    #     if item.start < location:
+    #         for key, value in total_array_of_source_ranges.keys():
+    #             if item.start not in all(value):
+    #                 not_in_any = True
+    #         if not_in_any == True:
+    #             location = item.start
+    #             print(location)
 
 
     # OR
