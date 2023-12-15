@@ -162,12 +162,33 @@ def main():
 
     print(location)
 
-    # OR
-    
     seed_ranges.sort()
     full_seed_ranges = []
     for item in seed_ranges:
         full_seed_ranges.append(range(item[0], item[0] + item[1]))
+
+    total_array_of_source_ranges = {}
+    for key, value in dict_of_transitions.items():
+        array_of_source_ranges = []
+        for key, value in dictionary.keys():
+            array_of_source_ranges.append((key[1], key[1] + value))
+        total_array_of_source_ranges[key] = array_of_source_ranges
+
+    not_in_any = False
+
+    for item in full_seed_ranges:
+        if item.start < location:
+            for key, value in total_array_of_source_ranges.keys():
+                if item.start not in all(value):
+                    not_in_any = True
+            if not_in_any == True:
+                location = item.start
+                print(location)
+
+
+    # OR
+    
+
 
     # find range of numbers less than 3113752778 
 
