@@ -1,5 +1,5 @@
 def read_file():
-    with open("test2.txt", "r") as file:
+    with open("input.txt", "r") as file:
         lines = file.readlines()
 
     seed_ranges = []
@@ -88,6 +88,29 @@ def get_next_range(old_range, dictionary):
     return next_range
 
 
+def find_seeds(seed_ranges, target_range):
+    seed_ranges.sort()
+    full_seed_ranges = []
+    for item in seed_ranges:
+        full_seed_ranges.append(range(item[0], item[0] + item[1]))
+
+    for item in full_seed_ranges:
+        result = find_intersection(target_range, item)
+        if result != None:
+            break
+    return result
+
+
+def get_destination_value(source_value, dictionary):
+    destination_value = ""
+
+    for key, value in dictionary.items():
+        if source_value in range(key[1], key[1] + value):
+            destination_value = key[0] + (source_value - key[1])
+    print(f"source {source_value} destination {destination_value}")
+    return destination_value
+
+
 def main():
     # get seed ranges and dictionaries
     seed_ranges, dict_of_transitions, reverse_dict = read_file()
@@ -108,22 +131,62 @@ def main():
 
     print(f"humidity range {humidity_ranges[0]}")
 
-    next_range = humidity_ranges[0]
+    seeds_found = False
 
-    for dictionary in reverse_dict.values():
-        new_range = get_next_range(next_range, dictionary)
-        next_range = new_range
+    final_seeds = None
 
-    print(f"final result {next_range}")
+    while seeds_found == False:
+        for item in humidity_ranges:
+            next_range = item
+            for dictionary in reverse_dict.values():
+                if next_range != None:
+                    new_range = get_next_range(next_range, dictionary)
+                    next_range = new_range
+            if next_range != None:
+                print(f"last range {next_range}")
+                final_seeds = find_seeds(seed_ranges, next_range)
+            if final_seeds != None:
+                seeds_found = True
 
-    # temperature_range = get_next_range(humidity_ranges[0], dict_of_transitions["temperature_to_humidity"])
-    # light_range = get_next_range(temperature_range, dict_of_transitions["light_to_temperature"])
-    # water_range = get_next_range(light_range, dict_of_transitions["water_to_light"])
-    # fertilizer_range = get_next_range(water_range, dict_of_transitions["fertilizer_to_water"])
-    # soil_range = get_next_range(fertilizer_range, dict_of_transitions["soil_to_fertilizer"])
-    # seed_range = get_next_range(soil_range, dict_of_transitions["seed_to_soil"])
+    print(final_seeds)
 
-    # print(f"seed range {seed_range}")
+    start_value = final_seeds.start
+    print(f"start value {start_value}")
+    next_value = ""
+
+    for dictionary in dict_of_transitions.values():
+        next_value = get_destination_value(start_value, dictionary)
+        start_value = next_value
+
+    location = next_value
+
+    print(location)
+
+    # OR
+    
+    seed_ranges.sort()
+    full_seed_ranges = []
+    for item in seed_ranges:
+        full_seed_ranges.append(range(item[0], item[0] + item[1]))
+
+    # find range of numbers less than 3113752778 
+
+    # exclusion_start = ""
+    # exclusion_end = ""
+
+    # for item in full_seed_ranges:
+    #     for key, value in sort_dict(dict_of_transitions["seed_to_soil"]).items():
+    #         if item.start < key[1]:
+    #             exclusion_start = item.start
+    #             if item.stop >= key[1]:
+    #                 exclusion_end = key[1]
+    #             else:
+    #                 exclusion_end = item.stop
+    #         exclusion = range(exclusion_start, exclusion_end)
+
+    
+    
+
 
 
 
